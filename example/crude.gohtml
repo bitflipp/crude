@@ -5,7 +5,7 @@ import (
 )
 {{ range . }}
 func ({{ .ReceiverName }} *{{ .EntityName }}) create(db *sql.DB) (sql.Result, error) {
-	sql := `INSERT INTO {{ .TableName }} ({{ .Custom | .ToColumnNames | join ", " }}) VALUES ({{ repeat "?" (len .Custom) | join ", " }})`
+	sql := `INSERT INTO {{ .TableName }} ({{ .Custom | .ToColumnNames | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
 	return db.Exec(sql, {{ .Custom | wrap (print .ReceiverName ".") "" | join ", " }})
 }
 
@@ -19,7 +19,7 @@ func ({{ .ReceiverName }} *{{ .EntityName }}) read(db *sql.DB, clauses string, p
 }
 
 func ({{ .ReceiverName }} *{{ .EntityName }}) update(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
-	sql := `UPDATE {{ .TableName }} SET {{ zip .ColumnNames " = " (repeat "?" (len .ColumnNames)) | join ", " }} ` + clauses
+	sql := `UPDATE {{ .TableName }} SET {{ zip " = " .ColumnNames (repeat (len .ColumnNames) "?") | join ", " }} ` + clauses
 	return db.Exec(sql, parameters...)
 }
 

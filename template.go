@@ -9,7 +9,7 @@ func joinFunc(separator string, values []string) string {
 	return strings.Join(values, separator)
 }
 
-func repeatFunc(value string, times int) []string {
+func repeatFunc(times int, value string) []string {
 	repeated := make([]string, times)
 	for i := 0; i < times; i++ {
 		repeated[i] = value
@@ -25,7 +25,7 @@ func wrapFunc(left, right string, values []string) []string {
 	return newValues
 }
 
-func zipFunc(leftValues []string, separator string, rightValues []string) []string {
+func zipFunc(separator string, leftValues []string, rightValues []string) []string {
 	if len(leftValues) != len(rightValues) {
 		return nil
 	}
