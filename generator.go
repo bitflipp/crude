@@ -8,7 +8,7 @@ import (
 )
 
 type Generator struct {
-	Entities []Entity
+	Entities map[string]*Entity
 	Template *template.Template
 }
 
@@ -19,6 +19,12 @@ func (g *Generator) validate() error {
 	if g.Template == nil {
 		return errors.New("Template is nil")
 	}
+	for name, entity := range g.Entities {
+		entity.Name = name
+		if err := entity.validate(); err != nil {
+			return fmt.Errorf("failed to validate entity: %w", err)
+		}
+	}
 	return nil
 }
 
@@ -26,19 +32,5 @@ func (g *Generator) Run(writer io.Writer) error {
 	if err := g.validate(); err != nil {
 		return fmt.Errorf("failed to validate generator: %w", err)
 	}
-	definitions := make(map[string]*definition)
-	for _, entity := range g.Entities {
-		definition := &definition{}
-		if err := entity.validate(); err != nil {
-			return fmt.Errorf("failed to validate entity: %w", err)
-		}
-		if err := definition.derive(entity); err != nil {
-			return fmt.Errorf("failed to derive table definition: %w", err)
-		}
-		if _, found := definitions[definition.TableName]; found {
-			return fmt.Errorf("duplicate table name: '%s'", definition.TableName)
-		}
-		definitions[definition.TableName] = definition
-	}
-	return g.Template.Execute(writer, definitions)
+	return g.Template.Execute(writer, g.Entities)
 }

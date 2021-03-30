@@ -1,0 +1,19 @@
+{
+  "author": {
+    "table": "author",
+    "receiver": "a",
+    "fieldColumns": {
+      "name": "name"
+    },
+    "custom": ["name"]
+  },
+  "book": {
+    "table": "book",
+    "receiver": "b",
+    "fieldColumns": {
+      "Name": "name",
+      "ISBN": "isbn"
+    },
+    "custom": ["Name", "ISBN"]
+  }
+}

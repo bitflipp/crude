@@ -18,14 +18,14 @@ func repeat(times int, value string) []string {
 }
 
 func wrap(left, right string, values []string) []string {
-	newValues := make([]string, len(values))
+	wrapped := make([]string, len(values))
 	for i, value := range values {
-		newValues[i] = left + value + right
+		wrapped[i] = left + value + right
 	}
-	return newValues
+	return wrapped
 }
 
-func zip(separator string, leftValues []string, rightValues []string) []string {
+func zip(separator string, leftValues, rightValues []string) []string {
 	if len(leftValues) != len(rightValues) {
 		return nil
 	}

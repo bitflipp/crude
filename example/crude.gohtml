@@ -4,44 +4,44 @@ import (
 	"database/sql"
 )
 {{ range . }}
-func ({{ .ReceiverName }} *{{ .EntityName }}) create(db *sql.DB) (sql.Result, error) {
-	sql := `INSERT INTO {{ .TableName }} ({{ .Custom | .ToColumnNames | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
-	return db.Exec(sql, {{ .Custom | wrap (print .ReceiverName ".") "" | join ", " }})
+func ({{ .Receiver }} *{{ .Name }}) create(db *sql.DB) (sql.Result, error) {
+	sql := `INSERT INTO {{ .Table }} ({{ .Custom | .ToColumns | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
+	return db.Exec(sql, {{ .Custom | wrap (print .Receiver ".") "" | join ", " }})
 }
 
-func ({{ .ReceiverName }} *{{ .EntityName }}) read(db *sql.DB, clauses string, parameters ...interface{}) error {
-	sql := `SELECT {{ .ColumnNames | join ", " }} FROM {{ .TableName }} ` + clauses
+func ({{ .Receiver }} *{{ .Name }}) read(db *sql.DB, clauses string, parameters ...interface{}) error {
+	sql := `SELECT {{ .Columns | join ", " }} FROM {{ .Table }} ` + clauses
 	row := db.QueryRow(sql, parameters...)
-	if err := row.Scan({{ .FieldNames | wrap (print "&" .ReceiverName ".") "" | join ", " }}); err != nil {
+	if err := row.Scan({{ .Fields | wrap (print "&" .Receiver ".") "" | join ", " }}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func ({{ .ReceiverName }} *{{ .EntityName }}) update(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
-	sql := `UPDATE {{ .TableName }} SET {{ zip " = " .ColumnNames (repeat (len .ColumnNames) "?") | join ", " }} ` + clauses
+func ({{ .Receiver }} *{{ .Name }}) update(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
+	sql := `UPDATE {{ .Table }} SET {{ zip " = " .Columns (repeat (len .Columns) "?") | join ", " }} ` + clauses
 	return db.Exec(sql, parameters...)
 }
 
-func ({{ .ReceiverName }} *{{ .EntityName }}) delete(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
-	sql := `DELETE FROM {{ .TableName }} ` + clauses
+func ({{ .Receiver }} *{{ .Name }}) delete(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
+	sql := `DELETE FROM {{ .Table }} ` + clauses
 	return db.Exec(sql, parameters...)
 }
 
-type {{ .EntityName }}Slice []{{ .EntityName }}
+type {{ .Name }}Slice []{{ .Name }}
 
-func ({{ .ReceiverName }} *{{ .EntityName }}Slice) read(db *sql.DB, clauses string, parameters ...interface{}) error {
-	sql := `SELECT {{ .ColumnNames | join ", " }} FROM {{ .TableName }} ` + clauses
+func ({{ .Receiver }} *{{ .Name }}Slice) read(db *sql.DB, clauses string, parameters ...interface{}) error {
+	sql := `SELECT {{ .Columns | join ", " }} FROM {{ .Table }} ` + clauses
 	rows, err := db.Query(sql, parameters...)
 	if err != nil {
 		return err
 	}
 	for rows.Next() {
-		entity := {{ .EntityName }}{}
-		if err := rows.Scan({{ .FieldNames | wrap "&entity." "" | join ", " }}); err != nil {
+		entity := {{ .Name }}{}
+		if err := rows.Scan({{ .Fields | wrap "&entity." "" | join ", " }}); err != nil {
 			return err
 		}
-		*{{ .ReceiverName }} = append(*{{ .ReceiverName }}, entity)
+		*{{ .Receiver }} = append(*{{ .Receiver }}, entity)
 	}
 	return nil
 }
