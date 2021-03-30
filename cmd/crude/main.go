@@ -19,7 +19,7 @@ var (
 )
 
 func main() {
-	flag.StringVar(&flags.EntityDefinitionFilePath, "e", "./entities.json", "Entity definition file path")
+	flag.StringVar(&flags.EntityDefinitionFilePath, "e", "./crude.json", "Entity definition file path")
 	flag.StringVar(&flags.TemplateFilePath, "t", "./crude.gohtml", "Template file path")
 	flag.StringVar(&flags.OutputFilePath, "o", "", "Output file path. If empty, stdout is used")
 	flag.Parse()

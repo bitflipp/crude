@@ -6,18 +6,6 @@ import (
 	"text/template"
 )
 
-func toString(value interface{}) string {
-	return fmt.Sprint(value)
-}
-
-func toStrings(values []interface{}) []string {
-	stringSlice := make([]string, len(values))
-	for i, value := range values {
-		stringSlice[i] = toString(value)
-	}
-	return stringSlice
-}
-
 func join(separator string, values []string) string {
 	return strings.Join(values, separator)
 }
@@ -28,6 +16,18 @@ func repeat(times int, value string) []string {
 		repeated[i] = value
 	}
 	return repeated
+}
+
+func toString(value interface{}) string {
+	return fmt.Sprint(value)
+}
+
+func toStrings(values []interface{}) []string {
+	stringSlice := make([]string, len(values))
+	for i, value := range values {
+		stringSlice[i] = toString(value)
+	}
+	return stringSlice
 }
 
 func wrap(left, right string, values []string) []string {
