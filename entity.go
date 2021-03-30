@@ -22,9 +22,6 @@ func (e *Entity) validate() error {
 	if e.ReceiverName == "" {
 		return errors.New("ReceiverName is empty")
 	}
-	if e.Value == nil {
-		return errors.New("Value is nil")
-	}
 	value := reflect.ValueOf(e.Value)
 	if value.Kind() != reflect.Struct {
 		return fmt.Errorf("Value is not a struct")

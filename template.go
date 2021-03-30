@@ -5,11 +5,11 @@ import (
 	"text/template"
 )
 
-func joinFunc(separator string, values []string) string {
+func join(separator string, values []string) string {
 	return strings.Join(values, separator)
 }
 
-func repeatFunc(times int, value string) []string {
+func repeat(times int, value string) []string {
 	repeated := make([]string, times)
 	for i := 0; i < times; i++ {
 		repeated[i] = value
@@ -17,7 +17,7 @@ func repeatFunc(times int, value string) []string {
 	return repeated
 }
 
-func wrapFunc(left, right string, values []string) []string {
+func wrap(left, right string, values []string) []string {
 	newValues := make([]string, len(values))
 	for i, value := range values {
 		newValues[i] = left + value + right
@@ -25,7 +25,7 @@ func wrapFunc(left, right string, values []string) []string {
 	return newValues
 }
 
-func zipFunc(separator string, leftValues []string, rightValues []string) []string {
+func zip(separator string, leftValues []string, rightValues []string) []string {
 	if len(leftValues) != len(rightValues) {
 		return nil
 	}
@@ -38,9 +38,9 @@ func zipFunc(separator string, leftValues []string, rightValues []string) []stri
 
 var (
 	FuncMap = template.FuncMap{
-		"join":   joinFunc,
-		"repeat": repeatFunc,
-		"wrap":   wrapFunc,
-		"zip":    zipFunc,
+		"join":   join,
+		"repeat": repeat,
+		"wrap":   wrap,
+		"zip":    zip,
 	}
 )
