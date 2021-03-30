@@ -12,7 +12,7 @@ type Entity struct {
 	Fields       []string          `json:"-"`
 	ColumnFields map[string]string `json:"-"`
 	Columns      []string          `json:"-"`
-	Custom       []string          `json:"custom"`
+	Custom       interface{}       `json:"custom"`
 }
 
 func (e *Entity) ToFields(columns []string) []string {

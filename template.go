@@ -1,9 +1,22 @@
 package crude
 
 import (
+	"fmt"
 	"strings"
 	"text/template"
 )
+
+func toString(value interface{}) string {
+	return fmt.Sprint(value)
+}
+
+func toStrings(values []interface{}) []string {
+	stringSlice := make([]string, len(values))
+	for i, value := range values {
+		stringSlice[i] = toString(value)
+	}
+	return stringSlice
+}
 
 func join(separator string, values []string) string {
 	return strings.Join(values, separator)
@@ -38,9 +51,11 @@ func zip(separator string, leftValues, rightValues []string) []string {
 
 var (
 	FuncMap = template.FuncMap{
-		"join":   join,
-		"repeat": repeat,
-		"wrap":   wrap,
-		"zip":    zip,
+		"join":      join,
+		"repeat":    repeat,
+		"toString":  toString,
+		"toStrings": toStrings,
+		"wrap":      wrap,
+		"zip":       zip,
 	}
 )

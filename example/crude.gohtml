@@ -7,8 +7,8 @@ import (
 )
 {{ range . }}
 func ({{ .Receiver }} *{{ .Name }}) create(db *sql.DB) (sql.Result, error) {
-	sql := `INSERT INTO {{ .Table }} ({{ .Custom | .ToColumns | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
-	return db.Exec(sql, {{ .Custom | wrap (print .Receiver ".") "" | join ", " }})
+	sql := `INSERT INTO {{ .Table }} ({{ .Custom | toStrings | .ToColumns | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
+	return db.Exec(sql, {{ .Custom | toStrings | wrap (print .Receiver ".") "" | join ", " }})
 }
 
 func ({{ .Receiver }} *{{ .Name }}) read(db *sql.DB, clauses string, parameters ...interface{}) error {
