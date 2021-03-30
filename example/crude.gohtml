@@ -1,3 +1,5 @@
+// Auto-generated file. Please do not edit manually.
+
 package main
 
 import (
@@ -20,6 +22,7 @@ func ({{ .Receiver }} *{{ .Name }}) read(db *sql.DB, clauses string, parameters 
 
 func ({{ .Receiver }} *{{ .Name }}) update(db *sql.DB, clauses string, parameters ...interface{}) (sql.Result, error) {
 	sql := `UPDATE {{ .Table }} SET {{ zip " = " .Columns (repeat (len .Columns) "?") | join ", " }} ` + clauses
+	parameters = append([]interface{}{{ print "{" }}{{ .Fields | wrap (print .Receiver ".") "" | join ", " }}{{ print "}" }}, parameters...)
 	return db.Exec(sql, parameters...)
 }
 
