@@ -5,14 +5,20 @@ import (
 )
 
 type Entity struct {
-	Name         string            `json:"-"`
-	Table        string            `json:"table"`
-	Receiver     string            `json:"receiver"`
-	FieldColumns map[string]string `json:"fieldColumns"`
-	Fields       []string          `json:"-"`
-	ColumnFields map[string]string `json:"-"`
-	Columns      []string          `json:"-"`
-	Custom       interface{}       `json:"custom"`
+	// Required
+	Name         string
+	Table        string
+	Receiver     string
+	InsertFields []string
+	FieldColumns map[string]string
+
+	// Optional
+	Custom interface{}
+
+	// Computed
+	Fields       []string          `toml:"-"`
+	ColumnFields map[string]string `toml:"-"`
+	Columns      []string          `toml:"-"`
 }
 
 func (e *Entity) ToFields(columns []string) []string {
@@ -36,10 +42,13 @@ func (e *Entity) validate() error {
 		return errors.New("Name is empty")
 	}
 	if e.Table == "" {
-		return errors.New("TableName is empty")
+		return errors.New("Table is empty")
 	}
 	if e.Receiver == "" {
-		return errors.New("ReceiverName is empty")
+		return errors.New("Receiver is empty")
+	}
+	if e.InsertFields == nil {
+		return errors.New("InsertFields is nil")
 	}
 	if e.FieldColumns == nil || len(e.FieldColumns) == 0 {
 		return errors.New("FieldColumns is nil or empty")

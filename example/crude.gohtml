@@ -1,14 +1,14 @@
 // Auto-generated file. Please do not edit manually.
 
-package main
+package example
 
 import (
 	"database/sql"
 )
 {{ range . }}
 func ({{ .Receiver }} *{{ .Name }}) create(db *sql.DB) (sql.Result, error) {
-	sql := `INSERT INTO {{ .Table }} ({{ .Custom | toStrings | .ToColumns | join ", " }}) VALUES ({{ repeat (len .Custom) "?" | join ", " }})`
-	return db.Exec(sql, {{ .Custom | toStrings | wrap (print .Receiver ".") "" | join ", " }})
+	sql := `INSERT INTO {{ .Table }} ({{ .InsertFields | .ToColumns | join ", " }}) VALUES ({{ repeat (len .InsertFields) "?" | join ", " }})`
+	return db.Exec(sql, {{ .InsertFields | wrap (print .Receiver ".") "" | join ", " }})
 }
 
 func ({{ .Receiver }} *{{ .Name }}) read(db *sql.DB, clauses string, parameters ...interface{}) error {
