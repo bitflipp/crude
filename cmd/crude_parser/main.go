@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
+	"strings"
 
 	"github.com/bitflipp/crude"
 )
@@ -21,12 +23,17 @@ var (
 
 func main() {
 	// Flags
-	tableConverterNames := ""
+	converterNames := make(sort.StringSlice, 0)
+	for converterName := range converters {
+		converterNames = append(converterNames, converterName)
+	}
+	converterNames.Sort()
+	converterNamesJoined := strings.Join(converterNames, ", ")
+	flag.StringVar(&flags.ColumnConverter, "cc", "snake", "Column converter, choice of "+converterNamesJoined)
 	flag.StringVar(&flags.InputFilePath, "i", "", "Input file path. If empty, stdin is used")
 	flag.StringVar(&flags.OutputFilePath, "o", "", "Output file path. If empty, stdout is used")
-	flag.StringVar(&flags.ReceiverConverter, "rc", "single", "Receiver converter, choice of "+tableConverterNames)
-	flag.StringVar(&flags.TableConverter, "tc", "snake", "Table converter, choice of "+tableConverterNames)
-	flag.StringVar(&flags.ColumnConverter, "fc", "snake", "Column converter, choice of "+tableConverterNames)
+	flag.StringVar(&flags.ReceiverConverter, "rc", "single", "Receiver converter, choice of "+converterNamesJoined)
+	flag.StringVar(&flags.TableConverter, "tc", "snake", "Table converter, choice of "+converterNamesJoined)
 	flag.Parse()
 
 	// Input
@@ -64,7 +71,7 @@ func main() {
 	}
 	columnConverter, ok := converters[flags.ColumnConverter]
 	if !ok {
-		log.Fatalf("unknown field converter: %s", flags.ColumnConverter)
+		log.Fatalf("unknown column converter: %s", flags.ColumnConverter)
 	}
 	parser := crude.Parser{
 		Input:             input,
