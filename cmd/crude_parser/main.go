@@ -50,7 +50,7 @@ func main() {
 	}
 
 	// Output
-	output := os.Stdin
+	output := os.Stdout
 	if flags.OutputFilePath != "" {
 		var err error
 		output, err = os.Create(flags.OutputFilePath)
