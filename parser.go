@@ -13,27 +13,33 @@ import (
 type visitor struct {
 	parser   *Parser
 	entities map[string]Entity
-	entity   Entity
+	typeSpec *ast.TypeSpec
 }
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	switch nodeImpl := node.(type) {
 	case *ast.TypeSpec:
-		v.entity = Entity{
-			Name:         nodeImpl.Name.Name,
-			Table:        v.parser.TableConverter(nodeImpl.Name.Name),
-			Receiver:     v.parser.ReceiverConverter(nodeImpl.Name.Name),
+		v.typeSpec = nodeImpl
+	case *ast.StructType:
+		if v.typeSpec == nil {
+			return v
+		}
+		typeName := v.typeSpec.Name.Name
+		entity := Entity{
+			Name:         typeName,
+			Table:        v.parser.TableConverter(typeName),
+			Receiver:     v.parser.ReceiverConverter(typeName),
 			InsertFields: make([]string, 0),
 			FieldColumns: make(map[string]string),
 		}
-	case *ast.StructType:
 		for _, field := range nodeImpl.Fields.List {
 			fieldName := field.Names[0].Name
 			columnName := v.parser.ColumnConverter(fieldName)
-			v.entity.FieldColumns[fieldName] = columnName
-			v.entity.InsertFields = append(v.entity.InsertFields, fieldName)
+			entity.FieldColumns[fieldName] = columnName
+			entity.InsertFields = append(entity.InsertFields, fieldName)
 		}
-		v.entities[v.entity.Name] = v.entity
+		v.entities[entity.Name] = entity
+		v.typeSpec = nil
 	}
 	return v
 }
