@@ -6,8 +6,6 @@ import (
 	"go/token"
 	"io"
 	"io/ioutil"
-
-	"github.com/pelletier/go-toml"
 )
 
 type visitor struct {
@@ -54,20 +52,20 @@ type Parser struct {
 	ColumnConverter   Converter
 }
 
-func (p *Parser) Run(output io.Writer) error {
+func (p *Parser) Run() (map[string]Entity, error) {
 	src, err := ioutil.ReadAll(p.Input)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	fileSet := token.NewFileSet()
 	file, err := parser.ParseFile(fileSet, p.FileName, src, 0)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	visitor := &visitor{
 		parser:   p,
 		entities: make(map[string]Entity),
 	}
 	ast.Walk(visitor, file)
-	return toml.NewEncoder(output).Encode(visitor.entities)
+	return visitor.entities, nil
 }

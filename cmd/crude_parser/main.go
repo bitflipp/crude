@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/bitflipp/crude"
+	"github.com/pelletier/go-toml"
 )
 
 var (
@@ -61,16 +62,16 @@ func main() {
 	}
 
 	// Parser
-	receiverConverter, ok := converters[flags.ReceiverConverter]
-	if !ok {
+	receiverConverter, found := converters[flags.ReceiverConverter]
+	if !found {
 		log.Fatalf("unknown receiver converter: %s", flags.ReceiverConverter)
 	}
-	tableConverter, ok := converters[flags.TableConverter]
-	if !ok {
+	tableConverter, found := converters[flags.TableConverter]
+	if !found {
 		log.Fatalf("unknown table converter: %s", flags.TableConverter)
 	}
-	columnConverter, ok := converters[flags.ColumnConverter]
-	if !ok {
+	columnConverter, found := converters[flags.ColumnConverter]
+	if !found {
 		log.Fatalf("unknown column converter: %s", flags.ColumnConverter)
 	}
 	parser := crude.Parser{
@@ -80,7 +81,11 @@ func main() {
 		TableConverter:    tableConverter,
 		ColumnConverter:   columnConverter,
 	}
-	if err := parser.Run(output); err != nil {
+	entities, err := parser.Run()
+	if err != nil {
 		log.Fatalf("failed to run parser: %s", err)
+	}
+	if err := toml.NewEncoder(output).Encode(entities); err != nil {
+		log.Fatalf("failed to encode entities: %s", err)
 	}
 }
