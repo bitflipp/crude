@@ -55,15 +55,15 @@ type entity struct {
 	entityName := "entity"
 	parser, entity, err := parseEntity(source, entityName)
 	if err != nil {
-		t.Fatalf("failed to parse entity: %s", err)
+		t.Errorf("failed to parse entity: %s", err)
 	}
 	tableExpected := parser.TableConverter(entityName)
 	if entity.Table != tableExpected {
-		t.Fatalf("Table: got %s, expected %s", entity.Table, tableExpected)
+		t.Errorf("Table: got %s, expected %s", entity.Table, tableExpected)
 	}
 	receiverExpected := parser.ReceiverConverter(entityName)
 	if entity.Receiver != receiverExpected {
-		t.Fatalf("Receiver: got %s, expected %s", entity.Receiver, receiverExpected)
+		t.Errorf("Receiver: got %s, expected %s", entity.Receiver, receiverExpected)
 	}
 	columnFieldsExpected := map[string]string{
 		"A": parser.ColumnConverter("A"),
@@ -71,7 +71,7 @@ type entity struct {
 		"c": parser.ColumnConverter("c"),
 	}
 	if !reflect.DeepEqual(entity.FieldColumns, columnFieldsExpected) {
-		t.Fatalf("ColumnFields: got %#v, expected %#v", entity.ColumnFields, columnFieldsExpected)
+		t.Errorf("ColumnFields: got %#v, expected %#v", entity.ColumnFields, columnFieldsExpected)
 	}
 }
 
@@ -94,9 +94,9 @@ func anonymous() {
 	entityName := "entity"
 	_, entity, err := parseEntity(source, entityName)
 	if err != nil {
-		t.Fatalf("failed to parse entity: %s", err)
+		t.Errorf("failed to parse entity: %s", err)
 	}
 	if _, found := entity.FieldColumns["D"]; found {
-		t.Fatal("entity contains field from unrelated anonymous struct")
+		t.Error("entity contains field from unrelated anonymous struct")
 	}
 }

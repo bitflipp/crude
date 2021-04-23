@@ -5,7 +5,6 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
-	"io/ioutil"
 )
 
 type visitor struct {
@@ -53,7 +52,7 @@ type Parser struct {
 }
 
 func (p *Parser) Run() (map[string]Entity, error) {
-	src, err := ioutil.ReadAll(p.Input)
+	src, err := io.ReadAll(p.Input)
 	if err != nil {
 		return nil, err
 	}
